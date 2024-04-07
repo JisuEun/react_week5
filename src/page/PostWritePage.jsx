@@ -97,7 +97,7 @@ function PostWritePage(props) {
 
         // 수정 모드이고 postId가 있을 경우에만 서버로부터 데이터를 가져옴
         if (isEditFromQuery && postIdFromQuery) {
-            axios.get(`http://localhost:3001/rest-api/posts/${postIdFromQuery}`)
+            axios.get(`http://54.161.32.32/rest-api/posts/${postIdFromQuery}`)
                 .then(response => {
                     const { title, author, content, Photos } = response.data;
                     setTitle(title);
@@ -105,7 +105,7 @@ function PostWritePage(props) {
                     setContent(content);
                     setExistingPhotos(Photos.map(photo => ({
                         ...photo,
-                        url: `http://localhost:3001/rest-api/uploads/${photo.filename}`
+                        url: `http://54.161.32.32/rest-api/uploads/${photo.filename}`
                     })));
                 })
                 .catch(error => {
@@ -118,7 +118,7 @@ function PostWritePage(props) {
     // 사진 삭제 함수
     const handleDeleteExistingPhoto = async (photoId) => {
         try {
-            await axios.delete(`http://localhost:3001/rest-api/photos/${photoId}`);
+            await axios.delete(`http://54.161.32.32/rest-api/photos/${photoId}`);
             setExistingPhotos(existingPhotos.filter(photo => photo.id !== photoId));
         } catch (error) {
             alert('사진을 삭제하는데 실패했습니다.');
@@ -182,7 +182,7 @@ function PostWritePage(props) {
                     'Content-Type': 'multipart/form-data'
                 }
             };
-            const url = `http://localhost:3001/rest-api/posts${isEdit ? `/${postId}` : ''}`;
+            const url = `http://54.161.32.32/rest-api/posts${isEdit ? `/${postId}` : ''}`;
             const method = isEdit ? 'put' : 'post';
             await axios[method](url, formData, config);
 

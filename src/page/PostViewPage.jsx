@@ -101,7 +101,7 @@ function PostViewPage(props) {
     useEffect(() => {
         const fetchPost = async () => {
             try {
-                const response = await axios.get(`http://localhost:3001/rest-api/posts/${postId}`);
+                const response = await axios.get(`http://54.161.32.32/rest-api/posts/${postId}`);
                 setPost(response.data);
             } catch (error) {
                 console.error('Failed to fetch post:', error);
@@ -116,7 +116,7 @@ function PostViewPage(props) {
         const isConfirmed = window.confirm('정말로 글을 삭제하시겠습니까?');
         if (isConfirmed) {
             try {
-                await axios.delete(`http://localhost:3001/rest-api/posts/${postId}`);
+                await axios.delete(`http://54.161.32.32/rest-api/posts/${postId}`);
                 navigate('/'); // 삭제 후 메인 페이지로 리다이렉트
             } catch (error) {
                 console.error('Failed to delete post:', error);
@@ -142,7 +142,7 @@ function PostViewPage(props) {
                     {/* 이미지를 표시하기 위한 컨테이너 */}
                     <ImageContainer>
                         {post.Photos && post.Photos.map((photo) => (
-                            <Image key={photo.id} src={`http://localhost:3001/${photo.path}`} alt="Post" />
+                            <Image key={photo.id} src={`http://54.161.32.32/${photo.path}`} alt="Post" />
                         ))}
                     </ImageContainer>
                 </PostContainer>

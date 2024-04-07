@@ -33,7 +33,7 @@ function MainPage(props) {
         const fetchPosts = async () => {
             try {
                 // axios.get을 사용하여 데이터를 요청합니다.
-                const response = await axios.get('http://localhost:3001/rest-api/posts');
+                const response = await axios.get('http://54.161.32.32/rest-api/posts');
                 setPosts(response.data); // response.data로 직접 접근합니다.
             } catch (error) {
                 console.error('Failed to fetch posts:', error);
