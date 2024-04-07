@@ -34,7 +34,7 @@ function Header(props) {
 
     return (
         <HeaderContainer onClick={redirectToHome}>
-            <Title>고급 웹 프로그래밍 과제3</Title>
+            <Title>고급 웹 프로그래밍 과제4</Title>
             <Name>컴퓨터학부 2020112037 은지수</Name>
         </HeaderContainer>
     );

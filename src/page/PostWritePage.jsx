@@ -1,9 +1,10 @@
-import React, { useState, useEffect, } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import TextInput from '../ui/TextInput';
-import Button from '../ui/Button';
-import Header from '../ui/Header';
+import TextInput from '../component/ui/TextInput';
+import Button from '../component/ui/Button';
+import Header from '../component/ui/Header';
+import axios from 'axios';
 
 const Wrapper = styled.div`
     padding: 16px;
@@ -31,6 +32,19 @@ const ButtonContainer = styled.div`
     justify-content: flex-end;
 `;
 
+const HighlightText = styled.p`
+    background-color: #f0f0f0; /* 형광펜 효과를 위한 배경색 */
+    padding: 5px; /* 텍스트 주변에 패딩 추가 */
+    border-radius: 5px; /* 모서리를 약간 둥글게 */
+    display: inline-block; /* 배경색을 텍스트 주위만 적용 */
+    margin-top: 10px; /* 위쪽 여백 추가 */
+    font-size: 14px;
+`;
+
+const HiddenFileInput = styled.input`
+    display: none;
+`
+
 function PostWritePage(props) {
     const navigate = useNavigate();
     // useLocation을 사용하여 location 객체에 접근
@@ -40,6 +54,8 @@ function PostWritePage(props) {
     const [title, setTitle] = useState('');
     const [author, setAuthor] = useState('');
     const [content, setContent] = useState('');
+    const [photos, setPhotos] = useState([]);
+
     // `isEdit`와 `postId` 상태
     const [isEdit, setIsEdit] = useState(false);
     const [postId, setPostId] = useState(null);
@@ -56,12 +72,12 @@ function PostWritePage(props) {
     
         // 수정 모드이고 postId가 있을 경우에만 서버로부터 데이터를 가져옴
         if (isEditFromQuery && postIdFromQuery) {
-            fetch(`http://localhost:3001/rest-api/posts/${postIdFromQuery}`)
-                .then(response => response.json())
-                .then(data => {
-                    setTitle(data.title);
-                    setAuthor(data.author);
-                    setContent(data.content);
+            axios.get(`http://localhost:3001/rest-api/posts/${postIdFromQuery}`)
+                .then(response => {
+                    const { title, author, content } = response.data;
+                    setTitle(title);
+                    setAuthor(author);
+                    setContent(content);
                 })
                 .catch(error => {
                     console.error('Error fetching post data:', error);
@@ -70,6 +86,22 @@ function PostWritePage(props) {
         }
     }, [location]); // location이 변경될 때마다 useEffect가 실행됨
 
+    // 파일 입력을 위한 ref 생성
+    const fileInputRef = useRef(null);
+    // 버튼 클릭 시 숨겨진 file input 실행
+    const handleFileButtonClick = () => {
+        fileInputRef.current.click();
+    }
+
+    const handleFileChange = (event) => {
+        if (event.target.files.length>2) {
+            alert('최대 2개의 사진만 업로드할 수 있습니다.');
+            setPhotos([...event.target.files].slice(0,2));
+        }else {
+        setPhotos([...event.target.files]);
+        }
+    };
+
     // 버튼 클릭 시 실행되는 함수
     const handleSubmit = async () => {
         if (!title.trim() || !author.trim() || !content.trim()) {
@@ -77,29 +109,32 @@ function PostWritePage(props) {
             return;
         }
 
-        const postInfo = { title, author, content };
-        const url = `http://localhost:3001/rest-api/posts${isEdit ? `/${postId}` : ''}`;
-        console.log(url);
-        const method = isEdit ? 'PUT' : 'POST';
-
+        const formData = new FormData();
+        formData.append('title', title);
+        formData.append('author', author);
+        formData.append('content', content);
+        
+        // 사진이 있다면 FormData에 추가
+        photos.forEach(photo => {
+            formData.append('photos', photo); // 각 사진 파일 추가
+        });
+        
         try {
-            const response = await fetch(url, {
-                method: method,
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(postInfo),
-            });
+            const config = {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            };
+            const url = `http://localhost:3001/rest-api/posts${isEdit ? `/${postId}` : ''}`;
+            const method = isEdit ? 'put' : 'post';
+            await axios[method](url, formData, config);
 
-            if (response.ok) {
-                navigate('/');
-            } else {
-                throw new Error('Failed to save the post.');
-            }
+            navigate('/');
         } catch (error) {
             console.error('Failed to submit post:', error);
             alert('글을 저장하는 데 실패했습니다.');
         }
-        console.log(postId, isEdit);
-    };
+    };    
 
     return (
         <Wrapper>
@@ -141,7 +176,24 @@ function PostWritePage(props) {
                         color="grey"
                     />
                 </InputContainer>
-
+                <InputContainer>
+                        <Button 
+                            title="이미지 업로드"
+                            onClick={handleFileButtonClick}>사진 선택</Button>
+                        <HiddenFileInput
+                            type='file'
+                            ref={fileInputRef}
+                            accept="image/*"
+                            multiple
+                            onChange={handleFileChange}
+                        />
+                        <HighlightText>한 번에 2개의 사진까지 선택할 수 있습니다.</HighlightText>
+                        <div>
+                        {photos.map((photo, index) => (
+            <div key={index}>{photo.name}</div> // 선택된 각 파일의 이름을 표시합니다.
+        ))}
+                        </div>
+                </InputContainer>
 
                 <ButtonContainer>
                     <Button

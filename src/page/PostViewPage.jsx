@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import Button from '../ui/Button';
-import Header from '../ui/Header';
+import Button from '../component/ui/Button';
+import Header from '../component/ui/Header';
+import axios from 'axios';
 
 const Wrapper = styled.div`
     padding: 16px;
@@ -90,12 +91,8 @@ function PostViewPage(props) {
     useEffect(() => {
         const fetchPost = async () => {
             try {
-                const response = await fetch(`http://localhost:3001/rest-api/posts/${postId}`);
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                const data = await response.json();
-                setPost(data);
+                const response = await axios.get(`http://localhost:3001/rest-api/posts/${postId}`);
+                setPost(response.data);
             } catch (error) {
                 console.error('Failed to fetch post:', error);
                 navigate('/'); // 에러가 발생하면 메인 페이지로 리다이렉트
@@ -103,19 +100,13 @@ function PostViewPage(props) {
         };
 
         fetchPost();
-    }, [postId, navigate]); // postId가 변경될 때마다 다시 실행
+    }, [postId, navigate]);
 
-    // handleDelete
     const handleDelete = async () => {
         const isConfirmed = window.confirm('정말로 글을 삭제하시겠습니까?');
         if (isConfirmed) {
             try {
-                const response = await fetch(`http://localhost:3001/rest-api/posts/${postId}`, {
-                    method: 'DELETE',
-                });
-                if (!response.ok) {
-                    throw new Error('Failed to delete the post.');
-                }
+                await axios.delete(`http://localhost:3001/rest-api/posts/${postId}`);
                 navigate('/'); // 삭제 후 메인 페이지로 리다이렉트
             } catch (error) {
                 console.error('Failed to delete post:', error);
