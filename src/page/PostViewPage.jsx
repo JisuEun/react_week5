@@ -80,6 +80,16 @@ const RightButtonGroup = styled.div`
     gap: 10px; // 버튼 사이 간격 조정
 `;
 
+const ImageContainer = styled.div`
+  margin-top: 16px;
+`;
+
+const Image = styled.img`
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin-bottom: 16px;
+`;
 
 function PostViewPage(props) {
 
@@ -120,7 +130,7 @@ function PostViewPage(props) {
     return (
         <Wrapper>
             <Container>
-                <Header/>
+                <Header />
                 <PostContainer>
                     <TitleText>{post.title}</TitleText>
                     <AuthorAndTimeContainer>
@@ -129,30 +139,36 @@ function PostViewPage(props) {
                     </AuthorAndTimeContainer>
                     <Divider /> {/* 구분선 추가 */}
                     <ContentText>{post.content}</ContentText>
+                    {/* 이미지를 표시하기 위한 컨테이너 */}
+                    <ImageContainer>
+                        {post.Photos && post.Photos.map((photo) => (
+                            <Image key={photo.id} src={`http://localhost:3001/${photo.path}`} alt="Post" />
+                        ))}
+                    </ImageContainer>
                 </PostContainer>
                 <ButtonGroup>
-                <LeftButtonGroup>
-                    <Button
-                        title='목록으로'
-                        onClick={() => {
-                            navigate('/');
-                        }}
-                    />
-                </LeftButtonGroup>
-                <RightButtonGroup>
-                <Button
-                    title='수정'
-                    onClick={() => {
-                        navigate(`/post-write?postId=${postId}&edit=true`);
-                    }}
-                />
-                    <Button
-                        title='삭제'
-                        onClick={handleDelete}
-                    />
-                </RightButtonGroup>
-            </ButtonGroup>
-                
+                    <LeftButtonGroup>
+                        <Button
+                            title='목록으로'
+                            onClick={() => {
+                                navigate('/');
+                            }}
+                        />
+                    </LeftButtonGroup>
+                    <RightButtonGroup>
+                        <Button
+                            title='수정'
+                            onClick={() => {
+                                navigate(`/post-write?postId=${postId}&edit=true`);
+                            }}
+                        />
+                        <Button
+                            title='삭제'
+                            onClick={handleDelete}
+                        />
+                    </RightButtonGroup>
+                </ButtonGroup>
+
             </Container>
         </Wrapper>
     );

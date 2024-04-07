@@ -20,13 +20,22 @@ const StyledButton = styled.button`
 
     &:focus {
         outline: none;
+    }
+
+    &:disabled {
+        background-color: grey; /* 비활성화 상태의 배경색 */
+        color: #9e9e9e; /* 비활성화 상태의 글자색 */
+        border-color: #9e9e9e; /* 비활성화 상태의 테두리색 */
+        cursor: not-allowed; /* 비활성화 상태의 커서 스타일 */
       }
 `;
 
 function Button(props) {
-    const { title, onClick } = props;
+    const { title, onClick, disabled } = props;
 
-    return <StyledButton onClick={onClick}>{title || "button"}</StyledButton>;
+    return <StyledButton onClick={onClick} disabled={disabled}>
+        {title || "button"}
+    </StyledButton>;
 }
 
 export default Button;
