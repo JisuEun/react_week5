@@ -32,16 +32,16 @@ function MainPage(props) {
     useEffect(() => {
         const fetchPosts = async () => {
             try {
-                // axios.get을 사용하여 데이터를 요청합니다.
+                // axios.get을 사용하여 데이터 요청
                 const response = await axios.get('http://54.161.32.32/rest-api/posts');
-                setPosts(response.data); // response.data로 직접 접근합니다.
+                setPosts(response.data);
             } catch (error) {
                 console.error('Failed to fetch posts:', error);
             }
         };
 
         fetchPosts();
-    }, []); // 의존성 배열을 비워서 마운트 시에만 호출되도록 합니다.
+    }, []); // 의존성 배열을 비워서 마운트 시에만 호출되도록 함
     return (
         <Wrapper>
             <Container>

@@ -151,11 +151,11 @@ function PostWritePage(props) {
         // 이미 선택된 사진에 새로 선택한 사진을 더해서 2개를 초과하는지 확인
         if (newPhotos.length + selectedPhotos.length > 2) {
             alert('최대 2개의 사진만 업로드할 수 있습니다.');
-            // 초과하는 경우, 새로 선택한 사진은 무시하고, 기존의 사진만 남깁니다.
+            // 초과하는 경우, 새로 선택한 사진은 무시하고, 기존의 사진만 남김.
             return;
         }
 
-        // 새로 선택한 사진들을 기존의 사진 배열에 추가합니다.
+        // 새로 선택한 사진들을 기존의 사진 배열에 추가함.
         setNewPhotos([...newPhotos, ...selectedPhotos]);
     };
 
@@ -257,7 +257,7 @@ function PostWritePage(props) {
                             <PhotoItem key={index}>
                                 {photo.name}
                                 <DeleteButton onClick={() => removePhoto(index)}>X</DeleteButton>
-                            </PhotoItem> // 선택된 각 파일의 이름을 표시합니다.
+                            </PhotoItem> // 선택된 각 파일의 이름 표시
                         ))}
                     </div>
                 </InputContainer>
